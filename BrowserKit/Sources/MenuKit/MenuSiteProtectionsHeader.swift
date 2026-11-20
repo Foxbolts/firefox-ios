@@ -190,6 +190,13 @@ public final class MenuSiteProtectionsHeader: UIView, ThemeApplicable {
             constant: UX.badgesTopMargin
         )
         badgesTopFromLabels.priority = .defaultHigh
+
+        // Make the content at least as wide as the scroll view, so badges that fit stay
+        // on the leading side in RTL too; a narrower content would sit at the left edge.
+        let badgesContentFillsWidth = badgesScrollView.contentLayoutGuide.widthAnchor.constraint(
+            equalTo: badgesScrollView.frameLayoutGuide.widthAnchor
+        )
+        badgesContentFillsWidth.priority = .defaultLow
         trailingContentConstraints = [
             contentLabels.trailingAnchor.constraint(equalTo: closeButton.leadingAnchor,
                                                     constant: -UX.horizontalContentMargin)
@@ -216,11 +223,15 @@ public final class MenuSiteProtectionsHeader: UIView, ThemeApplicable {
             badgesScrollView.frameLayoutGuide.heightAnchor.constraint(
                 equalTo: badgesScrollView.contentLayoutGuide.heightAnchor
             ),
+            badgesScrollView.contentLayoutGuide.widthAnchor.constraint(
+                greaterThanOrEqualTo: badgesScrollView.frameLayoutGuide.widthAnchor
+            ),
+            badgesContentFillsWidth,
 
             badgesStack.topAnchor.constraint(equalTo: badgesScrollView.contentLayoutGuide.topAnchor),
             badgesStack.leadingAnchor.constraint(equalTo: badgesScrollView.contentLayoutGuide.leadingAnchor,
                                                  constant: UX.horizontalContentMargin),
-            badgesStack.trailingAnchor.constraint(equalTo: badgesScrollView.contentLayoutGuide.trailingAnchor,
+            badgesStack.trailingAnchor.constraint(lessThanOrEqualTo: badgesScrollView.contentLayoutGuide.trailingAnchor,
                                                   constant: -UX.horizontalContentMargin),
             badgesStack.bottomAnchor.constraint(equalTo: badgesScrollView.contentLayoutGuide.bottomAnchor)
         ])
